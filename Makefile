@@ -14,11 +14,11 @@ NAME = rkrief.filler
 
 SRC = srcs
 
-F_SRC = main.c
+F_SRC = main.c \ ft_find_player.c
 
 OBJ =	$(patsubst %.c, %.o, $(F_SRC))
 
-FLAG = -Wall -Wextra -Werror 
+FLAG = -Wall -Wextra -Werror
 
 all : $(NAME)
 

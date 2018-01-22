@@ -1,4 +1,3 @@
-/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
@@ -30,7 +29,7 @@ int		ft_findmove(t_size size)
 	while(ft_isdigit(size.tab[i]))
 		i--;
 	size.yme = ft_atoi(size.tab + i + 1);
-	while (size.tab[i] != me)
+	while (size.tab[i] != size.me)
 	{
 		i++;
 		counter++;
@@ -39,14 +38,14 @@ int		ft_findmove(t_size size)
 	return (1);
 }
 
-void	ft_findrival(t_size rival)
+void	ft_findrival(t_size size)
 {
 	int		i;
 	int		counter;
 
 	i = 0;
 	counter++;
-	if (ft_findmove(size));
+	if (ft_findmove(size))
 		return ;
 	while (size.tab[i] != size.rival)
 		i++;
@@ -55,7 +54,7 @@ void	ft_findrival(t_size rival)
 	while(ft_isdigit(size.tab[i]))
 		i--;
 	size.yrival = ft_atoi(size.tab + i + 1);
-	while (size.tab[i] != rival)
+	while (size.tab[i] != size.rival)
 	{
 		i++;
 		counter++;
@@ -77,7 +76,7 @@ void	ft_find_posme(t_size size)
 	while(ft_isdigit(size.tab[i]))
 		i--;
 	size.yme = ft_atoi(size.tab + i + 1);
-	while (size.tab[i] != me)
+	while (size.tab[i] != size.me)
 	{
 		i++;
 		counter++;
@@ -142,8 +141,8 @@ t_size	fill_struct(void)
 
 	size = ft_take_tab();
 	ft_find_posme(size);
-	ft_find_posrival(size);
-
+	ft_findrival(size);
+	return (size);
 }
 
 char	*ft_place(char c, char *str, t_size size)
@@ -153,33 +152,6 @@ char	*ft_place(char c, char *str, t_size size)
 	int		i;
 
 	size = fill_struct();
-	return (0);
-}
-
-int		ft_find_player(char *str, t_size size)
-{
-	int i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == 'p')
-		{
-			if (str[i + 1] == '1')
-			{
-				size.me = 'O';
-				size.rival = 'X';				
-				return (1);
-			}
-			if (str[i + 1] == '2')
-			{
-				size.me = 'X';
-				size.rival = 'O';						
-				return (2);
-			}
-		}
-		i++;
-	}
 	return (0);
 }
 

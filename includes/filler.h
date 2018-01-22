@@ -32,4 +32,6 @@ typedef struct	s_size
 	char	*tab;
 }				t_size;
 
+int		ft_find_player(char *str, t_size size);
+
 #endif
