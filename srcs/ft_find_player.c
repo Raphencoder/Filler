@@ -11,7 +11,7 @@
 
 #include "../includes/filler.h"
 
-int		ft_find_player(char *str, t_size size)
+int		ft_find_player(char *str, t_size *size)
 {
 	int i;
 
@@ -22,14 +22,14 @@ int		ft_find_player(char *str, t_size size)
 		{
 			if (str[i + 1] == '1')
 			{
-				size.me = 'O';
-				size.rival = 'X';
+				size->me = 'O';
+				size->rival = 'X';
 				return (1);
 			}
 			if (str[i + 1] == '2')
 			{
-				size.me = 'X';
-				size.rival = 'O';
+				size->me = 'X';
+				size->rival = 'O';
 				return (2);
 			}
 		}

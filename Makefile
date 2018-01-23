@@ -16,7 +16,7 @@ SRC = srcs
 
 F_SRC = main.c \ ft_find_player.c
 
-OBJ =	$(patsubst %.c, %.o, $(F_SRC))
+OBJ =	$(F_SRC:.c=.o)
 
 FLAG = -Wall -Wextra -Werror
 
@@ -26,7 +26,7 @@ $(NAME) : $(OBJ)
 	make -C libft
 	gcc -o $(NAME) $(FLAG) -L libft -lft $(OBJ)
 
-%.o: $(SRC)/%.c
+%.o: %.c
 	gcc -c -o $@ $<
 
 clean :

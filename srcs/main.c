@@ -11,167 +11,143 @@
 
 #include "../includes/filler.h"
 
-
-
-int		ft_findmove(t_size size)
+char	**ft_copy_tab(int i, int fd, char **buf, int y)
 {
-	int i;
-	int counter;
+	char	**str;
+	int		j;
 
-	i = 0;
-	counter++;
-	while (size.tab[i] != (size.rival + 32) && size.tab[i])
-		i++;
-	if (!size.tab[i])
-		return (0);
-	while(!ft_isdigit(size.tab[i]))
-		i--;
-	while(ft_isdigit(size.tab[i]))
-		i--;
-	size.yme = ft_atoi(size.tab + i + 1);
-	while (size.tab[i] != size.me)
+	j = 0;
+	str = (char**)ft_memalloc(sizeof(char*) * y + 1);
+	while (*buf[0] != 'P')
 	{
-		i++;
-		counter++;
+		str[j] = ft_strdup(*buf + 4);
+		ft_strdel(buf);
+		get_next_line(fd, buf);
+		j++;
 	}
-	size.xme = counter - 5;
-	return (1);
-}
-
-void	ft_findrival(t_size size)
-{
-	int		i;
-	int		counter;
-
-	i = 0;
-	counter++;
-	if (ft_findmove(size))
-		return ;
-	while (size.tab[i] != size.rival)
-		i++;
-	while(!ft_isdigit(size.tab[i]))
-		i--;
-	while(ft_isdigit(size.tab[i]))
-		i--;
-	size.yrival = ft_atoi(size.tab + i + 1);
-	while (size.tab[i] != size.rival)
-	{
-		i++;
-		counter++;
-	}
-	size.xrival = counter - 5;
-}
-
-void	ft_find_posme(t_size size)
-{
-	int		i;
-	int		counter;
-
-	i = 0;
-	counter++;
-	while (size.tab[i] != size.me)
-		i++;
-	while(!ft_isdigit(size.tab[i]))
-		i--;
-	while(ft_isdigit(size.tab[i]))
-		i--;
-	size.yme = ft_atoi(size.tab + i + 1);
-	while (size.tab[i] != size.me)
-	{
-		i++;
-		counter++;
-	}
-	size.xme = counter - 5;
-	ft_findrival(size);
-}
-
-
-
-char	*ft_copy_tab(t_size size)
-{
-	char *buf;
-	char *str;
-	char *tmp;
-
-	while (1)
-	{
-		get_next_line(0, &buf);
-		if (buf[0] == '0')
-			break ;
-		ft_strdel(&buf);
-	}
-	str = ft_strdup(buf);
-	ft_strdel(&buf);
-	while (get_next_line(0, &buf) > 0)
-	{
-		tmp = str;
-		str = ft_strjoin(str, buf);
-		ft_strdel(&tmp);
-	}
+	str[j] = NULL;
 	return (str);
 }
 
-t_size	ft_take_tab(void)
+int		ft_take_x(char *str)
+{
+	int	i;
+	int nb;
+
+	i = 0;
+	while (str[i] && !ft_isdigit(str[i]))
+	 	i++;
+	while (str[i] && ft_isdigit(str[i]))
+		i++;
+	while (str[i] && !ft_isdigit(str[i]))
+		i++;
+	nb = ft_atoi(str + i);
+	return (nb);
+}
+
+int		ft_take_y(char *str)
+{
+	int i;
+	int nb;
+
+	i = 0;
+	while (str[i] && !ft_isdigit(str[i]))
+		i++;
+	nb = ft_atoi(str + i);
+	return (nb);
+}
+
+void	ft_copy_all(t_size *size, int fd)
+{
+	char *buf;
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		get_next_line(fd, &buf);
+		if (buf[0] == '0')
+			break ;
+		else
+			ft_strdel(&buf);
+	}
+	while (!ft_istab(buf[i]))
+		i++;
+	size->tab = ft_copy_tab(i, fd, &buf, size->taby);
+	size->xpiece = ft_take_x(buf);
+	size->ypiece = ft_take_y(buf);
+	size->piece = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
+	i = 0;
+	while (get_next_line(fd, &buf) > 0)
+		size->piece[i++] = buf;
+}
+
+t_size	ft_take_tab(int fd)
 {
 	char	*buf;
 	int		i;
 	t_size	size;
 
 	i = 0;
+	ft_find_player(buf, &size);
+	ft_strdel(&buf);
 	while (1)
 	{
-		get_next_line(0, &buf);
+		get_next_line(fd, &buf);
 		if (buf[0] == 'P')
 			break ;
 		ft_strdel(&buf);
 	}
 	while (!ft_isdigit(buf[i]))
 		i++;
-	size.tabx = ft_atoi(buf + i);
+	size.taby = ft_atoi(buf + i);
 	while (ft_isdigit(buf[i]))
 		i++;
-	size.taby = ft_atoi(buf + i + 1);
-	size.tab = (char*)ft_copy_tab;
+	size.tabx = ft_atoi(buf + i + 1);
+	ft_copy_all(&size, fd);
 	return (size);
 }
 
-t_size	fill_struct(void)
-{
-	t_size	size;
-
-	size = ft_take_tab();
-	ft_find_posme(size);
-	ft_findrival(size);
-	return (size);
-}
-
-char	*ft_place(char c, char *str, t_size size)
+char	*ft_place(char *str, t_size *size, int fd)
 {
 	char	*buf;
 	int		counter;
 	int		i;
 
-	size = fill_struct();
+	*size = ft_take_tab(fd);
+	printf("me = %c\n", size->me);
+	printf("rival = %c\n", size->rival);
+	printf("tabx = %d\n", size->tabx);
+	printf("taby = %d\n", size->taby);
+	printf("xpiece = %d\n", size->xpiece);
+	printf("ypiece = %d\n\n", size->ypiece);
+	i = 0;
+	printf("piece =\n");
+	while (size->piece[i])
+	{
+		printf("%s\n", size->piece[i]);
+		i++;
+	}
+	printf("\n");
+	i = 0;
+	printf("tab =\n");
+	while (size->tab[i])
+	{
+		printf("%s\n", size->tab[i]);
+		i++;
+	}
 	return (0);
 }
 
 int		main(void)
 {
+	int		fd;
 	char	*str;
-	int		p;
 	t_size	size;
 
-	get_next_line(0, &str);
-	p = ft_find_player(str, size);
-	if (!p)
-		return (0);
-	if (p == 1)
-	{
-		ft_place(size.me, str, size);
-	}
-	else if (p == 2)
-	{
-		ft_place(size.me, str, size);
-	}
+	fd = open("test5", O_RDONLY);
+	get_next_line(fd, &str);
+	ft_place(str, &size, fd);
+	close(fd);
 	return (0);
 }
