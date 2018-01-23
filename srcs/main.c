@@ -11,6 +11,54 @@
 
 #include "../includes/filler.h"
 
+
+void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
+{
+	int i;
+	int j;
+	int touch;
+	int clonel;
+	int clonem;
+
+	i = 0;
+	touch = 0;
+	clonel = l;
+	clonem = m;
+	j = 0;
+	while ((size.ypiece - j) > 0)
+	{
+		while ((size.xpiece - i) > 0)
+		{
+			if (piece->tab[j][i] == '*' && size.tab[m][l] == size.me)
+			{
+					touch++;
+					piece->piecex = clonel;
+					piece->piecey = clonem;
+			}
+			i++;
+			l++;
+		}
+		i = 0;
+		j++;
+		l = clonel;
+		if (m < size.taby)
+			m++;
+		else
+			break ;
+	}
+	if (size.ypiece - j <= 0 && touch != 1)
+	{
+		if (clonel + 1 >= size.tabx)
+			ft_checkplace(piece, size, clonem + 1, 0);
+		else
+			ft_checkplace(piece, size, clonem, clonel + 1);
+	}
+	if (m >= size.taby && touch != 1)
+		return ;
+	if (touch == 1)
+		return ;
+}
+
 char	**ft_copy_tab(int i, int fd, char **buf, int y)
 {
 	char	**str;
@@ -57,9 +105,10 @@ int		ft_take_y(char *str)
 	return (nb);
 }
 
-void	ft_copy_all(t_size *size, int fd)
+char	**ft_copy_all(t_size *size, int fd)
 {
 	char *buf;
+	t_piece	piece;
 	int	i;
 
 	i = 0;
@@ -73,18 +122,18 @@ void	ft_copy_all(t_size *size, int fd)
 	}
 	while (!ft_istab(buf[i]))
 		i++;
-	size->tab = ft_copy_tab(i, fd, &buf, size->taby);
+	size->tab = ft_copy_tab(i, 0, &buf, size->taby);
 	size->xpiece = ft_take_x(buf);
 	size->ypiece = ft_take_y(buf);
-	size->piece = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
+	piece.tab = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
 	i = 0;
-	while (get_next_line(fd, &buf) > 0)
-		size->piece[i++] = buf;
+	while (get_next_line(0, &buf) > 0)
+		piece.tab[i++] = buf;
+	return (piece.tab);
 }
 
-t_size	ft_take_tab(int fd)
+t_size	ft_take_tab(int fd, t_piece *piece, char *buf)
 {
-	char	*buf;
 	int		i;
 	t_size	size;
 
@@ -104,37 +153,25 @@ t_size	ft_take_tab(int fd)
 	while (ft_isdigit(buf[i]))
 		i++;
 	size.tabx = ft_atoi(buf + i + 1);
-	ft_copy_all(&size, fd);
+	piece->tab = ft_copy_all(&size, 0);
 	return (size);
 }
 
 char	*ft_place(char *str, t_size *size, int fd)
 {
 	char	*buf;
+	t_piece	piece;
 	int		counter;
 	int		i;
 
-	*size = ft_take_tab(fd);
-	printf("me = %c\n", size->me);
-	printf("rival = %c\n", size->rival);
-	printf("tabx = %d\n", size->tabx);
-	printf("taby = %d\n", size->taby);
-	printf("xpiece = %d\n", size->xpiece);
-	printf("ypiece = %d\n\n", size->ypiece);
-	i = 0;
-	printf("piece =\n");
-	while (size->piece[i])
+	*size = ft_take_tab(fd, &piece, str);
+	ft_checkplace(&piece, *size, 0, 0);
+	if (piece.piecex)
 	{
-		printf("%s\n", size->piece[i]);
-		i++;
-	}
-	printf("\n");
-	i = 0;
-	printf("tab =\n");
-	while (size->tab[i])
-	{
-		printf("%s\n", size->tab[i]);
-		i++;
+		buf = ft_itoa(piece.piecex);
+		buf = ft_strjoin(buf, " ");
+		buf = ft_strjoin(buf, ft_itoa(piece.piecey));
+		return (buf);
 	}
 	return (0);
 }
@@ -143,11 +180,14 @@ int		main(void)
 {
 	int		fd;
 	char	*str;
+	char 	*res;
 	t_size	size;
+	t_piece	piece;
 
 	fd = open("test5", O_RDONLY);
 	get_next_line(fd, &str);
-	ft_place(str, &size, fd);
-	close(fd);
+	res = ft_place(str, &size, fd);
+	ft_putstr(res);
+//	close(0);
 	return (0);
 }

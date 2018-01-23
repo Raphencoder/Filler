@@ -6,7 +6,7 @@
 /*   By: rkrief <rkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/22 13:02:36 by rkrief            #+#    #+#             */
-/*   Updated: 2018/01/23 16:35:54 by rkrief           ###   ########.fr       */
+/*   Updated: 2018/01/23 19:52:29 by rkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,16 @@ typedef struct	s_size
 	int		newy;
 	int		xpiece;
 	int		ypiece;
-	char	**piece;
 	char	**tab;
 }				t_size;
+
+typedef struct	s_piece
+{
+	char **tab;
+	int	touch;
+	int	piecex;
+	int	piecey;
+}				t_piece;
 
 int		ft_find_player(char *str, t_size *size);
 int		ft_istab(char c);
