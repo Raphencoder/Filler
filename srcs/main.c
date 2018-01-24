@@ -12,7 +12,7 @@
 #include "../includes/filler.h"
 
 
-void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
+int	ft_checkplace(t_piece *piece, t_size size, int m, int l)
 {
 	int i;
 	int j;
@@ -54,9 +54,9 @@ void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
 			ft_checkplace(piece, size, clonem, clonel + 1);
 	}
 	if (m >= size.taby && touch != 1)
-		return ;
+		return (1);
 	if (touch == 1)
-		return ;
+		return (0);
 }
 
 char	**ft_copy_tab(int i, int fd, char **buf, int y)
@@ -69,7 +69,7 @@ char	**ft_copy_tab(int i, int fd, char **buf, int y)
 	while (*buf[0] != 'P')
 	{
 		str[j] = ft_strdup(*buf + 4);
-		ft_strdel(buf);
+	//	ft_strdel(buf);
 		get_next_line(fd, buf);
 		j++;
 	}
@@ -112,48 +112,44 @@ char	**ft_copy_all(t_size *size, int fd)
 	int	i;
 
 	i = 0;
-	while (1)
+	while (i < 2)
 	{
 		get_next_line(fd, &buf);
-		if (buf[0] == '0')
-			break ;
-		else
-			ft_strdel(&buf);
-	}
-	while (!ft_istab(buf[i]))
 		i++;
-	size->tab = ft_copy_tab(i, 0, &buf, size->taby);
+	//	else
+//			ft_strdel(&buf);
+	}
+
+	while (buf[i] && !ft_istab(buf[i]))
+		i++;
+	size->tab = ft_copy_tab(i, fd, &buf, size->taby);
 	size->xpiece = ft_take_x(buf);
 	size->ypiece = ft_take_y(buf);
 	piece.tab = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
 	i = 0;
-	while (get_next_line(0, &buf) > 0)
+	while (i < size->ypiece)
+	{
+		get_next_line(fd, &buf);
 		piece.tab[i++] = buf;
+	}
 	return (piece.tab);
 }
 
-t_size	ft_take_tab(int fd, t_piece *piece, char *buf)
+t_size	ft_take_tab(int fd, t_piece *piece, char *buf, t_size size)
 {
 	int		i;
-	t_size	size;
 
 	i = 0;
-	ft_find_player(buf, &size);
-	ft_strdel(&buf);
-	while (1)
-	{
+//	ft_find_player(buf, &size);
 		get_next_line(fd, &buf);
-		if (buf[0] == 'P')
-			break ;
-		ft_strdel(&buf);
-	}
-	while (!ft_isdigit(buf[i]))
+	//	ft_strdel(&buf);
+	while (buf[i] && !ft_isdigit(buf[i]))
 		i++;
 	size.taby = ft_atoi(buf + i);
-	while (ft_isdigit(buf[i]))
+	while (buf[i] && ft_isdigit(buf[i]))
 		i++;
 	size.tabx = ft_atoi(buf + i + 1);
-	piece->tab = ft_copy_all(&size, 0);
+	piece->tab = ft_copy_all(&size, fd);
 	return (size);
 }
 
@@ -164,13 +160,13 @@ char	*ft_place(char *str, t_size *size, int fd)
 	int		counter;
 	int		i;
 
-	*size = ft_take_tab(fd, &piece, str);
+	*size = ft_take_tab(fd, &piece, str, *size);
 	ft_checkplace(&piece, *size, 0, 0);
 	if (piece.piecex)
 	{
-		buf = ft_itoa(piece.piecex);
+		buf = ft_itoa(piece.piecey);
 		buf = ft_strjoin(buf, " ");
-		buf = ft_strjoin(buf, ft_itoa(piece.piecey));
+		buf = ft_strjoin(buf, ft_itoa(piece.piecex));
 		return (buf);
 	}
 	return (0);
@@ -184,10 +180,15 @@ int		main(void)
 	t_size	size;
 	t_piece	piece;
 
-	fd = open("test5", O_RDONLY);
+//	fd = open("test6", O_RDONLY);
+	fd = 0;
 	get_next_line(fd, &str);
-	res = ft_place(str, &size, fd);
-	ft_putstr(res);
+	ft_find_player(str, &size);
+	while (1)
+	{
+		res = ft_place(str, &size, fd);
+		ft_putendl(res);
+	}
 //	close(0);
 	return (0);
 }

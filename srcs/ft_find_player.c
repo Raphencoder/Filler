@@ -35,6 +35,5 @@ int		ft_find_player(char *str, t_size *size)
 		}
 		i++;
 	}
-	ft_putstr("hello");
 	return (0);
 }

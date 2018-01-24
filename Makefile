@@ -3,39 +3,50 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rkrief <rkrief@student.42.fr>              +#+  +:+       +#+         #
+#    By: alecott <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/01/22 12:15:04 by rkrief            #+#    #+#              #
-#    Updated: 2018/01/22 15:37:19 by rkrief           ###   ########.fr        #
+#    Created: 2017/11/29 09:33:30 by alecott           #+#    #+#              #
+#    Updated: 2018/01/24 15:05:01 by alecott          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+LIB_NAME = libft.a
+
+LIB_PATH = ./libft/
+
+LIB = $(addprefix $(LIB_PATH), $(LIB_NAME))
+
 NAME = rkrief.filler
 
-SRC = srcs
+CFLAGS = -Wall -Werror -Wextra
 
-F_SRC = main.c \ ft_find_player.c
+INC = filler.h
 
-OBJ =	$(F_SRC:.c=.o)
+SRCS_PATH = ./srcs/
 
-FLAG = -Wall -Wextra -Werror
+ALL_SRCS = main.c ft_istab.c ft_find_player.c
 
-all : $(NAME)
+SRCS = $(addprefix $(SRCS_PATH), $(ALL_SRCS))
 
-$(NAME) : $(OBJ)
-	make -C libft
-	gcc -o $(NAME) $(FLAG) -L libft -lft $(OBJ)
+OBJ = $(SRCS:.c=.o)
 
-%.o: %.c
-	gcc -c -o $@ $<
+all: $(NAME)
 
-clean :
-	make -C libft/ clean
-		rm -f $(OBJ)
+$(NAME): $(OBJ) $(INC)
+	@$(MAKE) -C libft
+	@gcc $(CFLAGS) $(OBJ) -L libft -lft -o $(NAME)
 
-fclean : clean
-	rm -f $(NAME) a.out
+%.o:$(SRCS_PATH)%.c
+	gcc -c $< -o $@ $(CFLAGS)
 
-re :	clean all
+clean:
+	@$(MAKE) -C libft $@
+	@/bin/rm -f $(LIB_OBJ)
 
-run :	re clean
+fclean: clean
+	@$(MAKE) -C libft $@
+	@/bin/rm -f $(NAME)
+
+re: fclean $(NAME)
+
+.PHONY: all clean fclean re
