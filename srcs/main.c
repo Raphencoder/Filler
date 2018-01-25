@@ -122,7 +122,7 @@ char	*ft_place(char *str, t_size *size, int fd)
 		buf = ft_strjoin(buf, ft_itoa(piece.bestx));
 		return (buf);
 	}
-	return ("0 0");
+	return ("-1 0");
 }
 
 int		main(void)
@@ -141,6 +141,8 @@ int		main(void)
 	{
 		res = ft_place(str, &size, fd);
 		ft_putendl(res);
+		if (ft_strequ("-1 0", res))
+			break ;
 	}
 //	close(0);
 	return (0);
