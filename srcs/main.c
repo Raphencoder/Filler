@@ -112,13 +112,14 @@ char	*ft_place(char *str, t_size *size, int fd)
 	int		i;
 
 	*size = ft_take_tab(fd, &piece, str, *size);
-	piece.piecex = -1;
+	piece.bestx = -1;
+	piece.bestscore = 10000000;
 	ft_checkplace(&piece, *size, 0, 0);
-	if (piece.piecex >= 0)
+	if (piece.bestx >= 0)
 	{
-		buf = ft_itoa(piece.piecey);
+		buf = ft_itoa(piece.besty);
 		buf = ft_strjoin(buf, " ");
-		buf = ft_strjoin(buf, ft_itoa(piece.piecex));
+		buf = ft_strjoin(buf, ft_itoa(piece.bestx));
 		return (buf);
 	}
 	return (NULL);
@@ -136,13 +137,13 @@ int		main(void)
 	fd = 0;
 	get_next_line(fd, &str);
 	ft_find_player(str, &size);
-	while (1)
-	{
+//	while (1)
+//	{
 		res = ft_place(str, &size, fd);
-		if (!res)
-			break ;
 		ft_putendl(res);
-	}
+	//	if (!res)
+		//	break ;
+//	}
 //	close(0);
 	return (0);
 }
