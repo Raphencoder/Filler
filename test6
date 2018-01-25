@@ -1,20 +1,21 @@
 $$$ exec p1 : [../rkrief.filler]
 Plateau 15 17:
     01234567890123456
-000 XXXXXXXXXXXXXXXXX
-001 XXXXXXXXXXXXXXXXX
-002 XXXXXXXXXXXXXXXXX
-003 XXXXXXXXXXXXXXXXX
-004 ....xxXXXXXXXXXXX
-005 ...xxxXX..XXX....
-006 ...O..O...X......
-007 ......O...XXXXXXX
-008 ..OO..O......X.XX
-009 ...OOOO......XXXX
-010 ...O......XXXXXXX
-011 ..............XXX
-012 ............XXXX.
-013 .................
+000 ........xxXXXXXXX
+001 ..........XX.XXXX
+002 ..........XXXXX..
+003 ............XX...
+004 .............X...
+005 ......OOOOOOXX...
+006 .........OOOX....
+007 .........OOOXXXXX
+008 ..O.......OOOOOXX
+009 ..OOOO....OOOOOXX
+010 ....OOOOOOOOXXXXX
+011 ......OO.OOOOOXXX
+012 .......O...OOOXXX
+013 ...........OOOOOO
 014 .................
-Piece 1 2:
-**
+Piece 2 1:
+*
+*

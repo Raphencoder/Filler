@@ -83,6 +83,20 @@ void ft_take_score(t_piece *piece, t_size size)
 	j = 0;
 	size.heat = ft_heat_map(size, *piece);
 	piece->score = 0;
+
+	/*while (i < size.taby)
+	{
+		while (j < size.tabx)
+		{
+			printf("%10d", size.heat[i][j]);
+			j++;
+		}
+		printf("\n");
+		j = 0;
+		i++;
+	}
+	i = 0;
+	j = 0;*/
 	while (i < size.ypiece)
 	{
 		while (j < size.xpiece)
@@ -94,6 +108,8 @@ void ft_take_score(t_piece *piece, t_size size)
 		j = 0;
 		i++;
 	}
+//	printf("piece score est %d\n", piece->score);
+//	if (piece->score == 0)
 	if (piece->score < piece->bestscore)
 	{
 		piece->bestscore = piece->score;
@@ -130,6 +146,7 @@ void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
 			else if (piece->tab[j][i] == '*' && ft_rival(size.tab[m][l], size.rival))
 			{
 				rival++;
+				touch = 0;
 				piece->piecex = -1;
 				piece->piecey = 0;
 				break ;
@@ -150,6 +167,7 @@ void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
 	if (touch == 1)
 	{
 		ft_take_score(piece, size);
+	//	printf("le meilleurs score est : %d %d\n", piece->besty, piece->bestx);
 		j = 50;
 		touch = 0;
 	}

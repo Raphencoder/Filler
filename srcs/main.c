@@ -122,7 +122,7 @@ char	*ft_place(char *str, t_size *size, int fd)
 		buf = ft_strjoin(buf, ft_itoa(piece.bestx));
 		return (buf);
 	}
-	return (NULL);
+	return ("0 0");
 }
 
 int		main(void)
@@ -137,13 +137,11 @@ int		main(void)
 	fd = 0;
 	get_next_line(fd, &str);
 	ft_find_player(str, &size);
-//	while (1)
-//	{
+	while (1)
+	{
 		res = ft_place(str, &size, fd);
 		ft_putendl(res);
-	//	if (!res)
-		//	break ;
-//	}
+	}
 //	close(0);
 	return (0);
 }
