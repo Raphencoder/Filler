@@ -11,29 +11,10 @@
 
 #include "../filler.h"
 
-int		ft_find_player(char *str, t_size *size)
+int     ft_ally(char c, char a)
 {
-	int i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == 'p')
-		{
-			if (str[i + 1] == '1')
-			{
-				size->me = 'O';
-				size->rival = 'X';
-				return (1);
-			}
-			if (str[i + 1] == '2')
-			{
-				size->me = 'X';
-				size->rival = 'O';
-				return (2);
-			}
-		}
-		i++;
-	}
-	return (0);
+    if (c == a || c == a + 32)
+        return (1);
+    else
+        return (0);
 }

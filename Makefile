@@ -18,13 +18,13 @@ LIB = $(addprefix $(LIB_PATH), $(LIB_NAME))
 
 NAME = rkrief.filler
 
-CFLAGS = -Wall -Werror -Wextra
 
 INC = filler.h
 
 SRCS_PATH = ./srcs/
 
-ALL_SRCS = main.c ft_istab.c ft_find_player.c
+ALL_SRCS = main.c ft_istab.c ft_find_player.c ft_ally.c ft_rival.c \
+ft_checkplace.c
 
 SRCS = $(addprefix $(SRCS_PATH), $(ALL_SRCS))
 
@@ -34,7 +34,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ) $(INC)
 	@$(MAKE) -C libft
-	@gcc $(CFLAGS) $(OBJ) -L libft -lft -o $(NAME)
+	@gcc $(CFLAGS) -g $(OBJ) -L libft -lft -o $(NAME)
 
 %.o:$(SRCS_PATH)%.c
 	gcc -c $< -o $@ $(CFLAGS)

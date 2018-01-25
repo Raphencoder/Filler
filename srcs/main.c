@@ -9,55 +9,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/filler.h"
-
-
-int	ft_checkplace(t_piece *piece, t_size size, int m, int l)
-{
-	int i;
-	int j;
-	int touch;
-	int clonel;
-	int clonem;
-
-	i = 0;
-	touch = 0;
-	clonel = l;
-	clonem = m;
-	j = 0;
-	while ((size.ypiece - j) > 0)
-	{
-		while ((size.xpiece - i) > 0)
-		{
-			if (piece->tab[j][i] == '*' && size.tab[m][l] == size.me)
-			{
-					touch++;
-					piece->piecex = clonel;
-					piece->piecey = clonem;
-			}
-			i++;
-			l++;
-		}
-		i = 0;
-		j++;
-		l = clonel;
-		if (m < size.taby)
-			m++;
-		else
-			break ;
-	}
-	if (size.ypiece - j <= 0 && touch != 1)
-	{
-		if (clonel + 1 >= size.tabx)
-			ft_checkplace(piece, size, clonem + 1, 0);
-		else
-			ft_checkplace(piece, size, clonem, clonel + 1);
-	}
-	if (m >= size.taby && touch != 1)
-		return (1);
-	if (touch == 1)
-		return (0);
-}
+#include "../filler.h"
 
 char	**ft_copy_tab(int i, int fd, char **buf, int y)
 {
@@ -119,7 +71,6 @@ char	**ft_copy_all(t_size *size, int fd)
 	//	else
 //			ft_strdel(&buf);
 	}
-
 	while (buf[i] && !ft_istab(buf[i]))
 		i++;
 	size->tab = ft_copy_tab(i, fd, &buf, size->taby);
@@ -161,15 +112,16 @@ char	*ft_place(char *str, t_size *size, int fd)
 	int		i;
 
 	*size = ft_take_tab(fd, &piece, str, *size);
+	piece.piecex = -1;
 	ft_checkplace(&piece, *size, 0, 0);
-	if (piece.piecex)
+	if (piece.piecex >= 0)
 	{
 		buf = ft_itoa(piece.piecey);
 		buf = ft_strjoin(buf, " ");
 		buf = ft_strjoin(buf, ft_itoa(piece.piecex));
 		return (buf);
 	}
-	return (0);
+	return (NULL);
 }
 
 int		main(void)
@@ -187,6 +139,8 @@ int		main(void)
 	while (1)
 	{
 		res = ft_place(str, &size, fd);
+		if (!res)
+			break ;
 		ft_putendl(res);
 	}
 //	close(0);

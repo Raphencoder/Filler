@@ -1,112 +1,128 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   filler.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alecott <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: rkrief <rkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/17 09:06:26 by alecott           #+#    #+#             */
-/*   Updated: 2017/12/18 18:43:59 by alecott          ###   ########.fr       */
+/*   Created: 2018/01/22 13:02:36 by rkrief            #+#    #+#             */
+/*   Updated: 2018/01/23 19:52:29 by rkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/libft.h"
 
-static int		read_buffer(int const fd, char **buffer)
+static t_fd_tracker		*find_fd_tracker_or_add(t_list **lst, const int fd)
 {
-	char	*buff;
-	char	*tmp;
-	int		ret;
+	t_fd_tracker	*tmp;
+	t_list			*lst_tmp;
 
-	buff = malloc(sizeof(char*) * (BUFF_SIZE + 1));
-	if (buff == NULL)
-		return (-1);
-	ret = read(fd, buff, BUFF_SIZE);
-	buff[ret] = '\0';
-	tmp = buffer[fd];
-	buffer[fd] = ft_strjoin(tmp, buff);
-	ft_memdel((void**)&buff);
-	ft_memdel((void**)&tmp);
-	return (ret);
+	lst_tmp = *lst;
+	while (lst_tmp)
+	{
+		tmp = lst_tmp->content;
+		if (tmp->fd == fd)
+			return (tmp);
+		lst_tmp = lst_tmp->next;
+	}
+	if ((tmp = ft_memalloc(sizeof(t_fd_tracker))) == 0)
+		return (0);
+	tmp->fd = fd;
+	if ((tmp->buf = ft_strnew(0)) == 0)
+		return (0);
+	if ((lst_tmp = ft_lstnew(tmp, sizeof(t_fd_tracker))) == 0)
+		return (0);
+	free(tmp);
+	ft_lstadd(lst, lst_tmp);
+	return (lst_tmp->content);
 }
 
-static char		*algo_get_next_line(t_m *m, int const fd)
+static int				read_and_stock(char **buf, const int fd)
 {
-	char	*dest;
-	int		len;
-	int		j;
-	int		y;
+	char			tmp_buf[BUFF_SIZE + 1];
+	char			*tmp;
+	int				readed;
 
-	len = 0;
-	j = 0;
-	y = m->i[fd];
-	while (m->buffer[fd][m->i[fd]] != '\0' && m->buffer[fd][m->i[fd]] != '\n')
-	{
-		m->i[fd]++;
-		len++;
-	}
-	dest = malloc(sizeof(char*) * len);
-	if (dest == NULL)
-		return (NULL);
-	while (j < len)
-	{
-		dest[j] = m->buffer[fd][y];
-		j++;
-		y++;
-	}
-	dest[j] = '\0';
-	m->i[fd]++;
-	return (dest);
+	if ((readed = read(fd, tmp_buf, BUFF_SIZE)) < 0)
+		return (-1);
+	tmp_buf[readed] = 0;
+	tmp = *buf;
+	*buf = ft_strjoin(*buf, tmp_buf);
+	free(tmp);
+	return (readed);
 }
 
-int				check_get_next_line(t_m *m, int const fd, char **line, int ret)
+static void				copy_and_crop(char **dest, char **src)
 {
-	*line = NULL;
-	if (m->buffer[fd][0] != 0 &&
-			(size_t)m->i[fd] >= ft_strlen(m->buffer[fd]))
+	size_t		idx;
+	char		*tmp;
+
+	idx = 0;
+	while ((*src)[idx] != '\n' && (*src)[idx] != 0)
+		idx++;
+	*dest = ft_strsub(*src, 0, idx);
+	if ((*src)[idx] == '\n')
 	{
-		ft_strdel(&m->buffer[fd]);
-		return (0);
+		tmp = *src;
+		*src = ft_strsub(*src, idx + 1, ft_strlen(*src) - idx - 1);
+		ft_strdel(&tmp);
 	}
-	while (ret > 0)
-		ret = read_buffer(fd, m->buffer);
-	if (ret < 0)
+	else
+		ft_strdel(src);
+}
+
+static void				free_fd_tracker(t_list **holder, const int fd)
+{
+	t_fd_tracker	*tmp;
+	t_list			*lst;
+	t_list			*lst_prev;
+
+	lst = *holder;
+	lst_prev = lst;
+	while (lst)
+	{
+		tmp = lst->content;
+		if (tmp->fd == fd)
+			break ;
+		lst_prev = lst;
+		lst = lst->next;
+	}
+	if (lst == 0)
+		return ;
+	if (lst_prev != lst)
+		lst_prev->next = lst->next;
+	if (*holder == lst)
+		*holder = lst->next;
+	if (tmp->buf)
+		ft_strdel(&tmp->buf);
+	ft_memdel((void **)&lst->content);
+	ft_memdel((void **)&lst);
+}
+
+int						get_next_line(const int fd, char **line)
+{
+	static t_list	*holder;
+	t_fd_tracker	*fdt;
+	int				readed;
+
+	if (fd < 0 || line == 0)
 		return (-1);
-	if (m->buffer[fd][m->i[fd]] == '\0')
+	*line = 0;
+	if ((fdt = find_fd_tracker_or_add(&holder, fd)) == 0)
+		return (-1);
+	readed = 1;
+	while (ft_strchr(fdt->buf, '\n') == 0 && readed > 0)
+		if ((readed = read_and_stock(&fdt->buf, fd)) == -1)
+			return (-1);
+	if (fdt->buf[0] != 0)
 	{
-		ft_strdel(&m->buffer[fd]);
-		return (0);
-	}
-	if (m->buffer[fd][m->i[fd]] == '\n')
-	{
-		m->i[fd]++;
-		*line = ft_strdup("");
+		copy_and_crop(line, &fdt->buf);
+		if (fdt->buf == 0)
+			free_fd_tracker(&holder, fd);
+		if (*line == 0)
+			return (-1);
 		return (1);
 	}
-	*line = algo_get_next_line(m, fd);
-	return (1);
-}
-
-int				get_next_line(int const fd, char **line)
-{
-	static t_m	*m;
-	int			ret;
-
-	ret = 1;
-	if (fd < 0 || line == NULL || read(fd, 0, 0) < 0)
-		return (-1);
-	if (m == NULL)
-		m = ft_memalloc(sizeof(t_m));
-	if (m == NULL)
-		return (-1);
-	if (!m->buffer)
-		m->buffer = ft_memalloc(sizeof(char*) * 4200);
-	if (!m->i)
-		m->i = ft_memalloc(sizeof(int) * 4200);
-	if (line == NULL)
-		return (-1);
-	if (!m->buffer[fd] && !(m->buffer[fd] = ft_strnew(BUFF_SIZE + 1)))
-		return (-1);
-	ret = check_get_next_line(m, fd, line, ret);
-	return (ret);
+	free_fd_tracker(&holder, fd);
+	return (0);
 }

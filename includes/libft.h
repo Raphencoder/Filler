@@ -27,6 +27,11 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+typedef struct	s_fd_tracker {
+	int		fd;
+	char	*buf;
+}				t_fd_tracker;
+
 void				ft_putchar(char c);
 int					ft_putwchar(wchar_t wc);
 int					get_next_line(int const fd, char **line);

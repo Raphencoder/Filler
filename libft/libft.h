@@ -27,6 +27,12 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+typedef struct	s_m
+{
+	int		*i;
+	char	**buffer;
+}				t_m;
+
 void				ft_putchar(char c);
 int					ft_putwchar(wchar_t wc);
 int					get_next_line(int const fd, char **line);

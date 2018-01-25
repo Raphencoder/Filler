@@ -13,7 +13,7 @@
 #ifndef FILLER_H
 # define FILLER_H
 
-# include "libft.h"
+# include "./includes/libft.h"
 # include "unistd.h"
 # include "stdlib.h"
 # include "fcntl.h"
@@ -44,6 +44,9 @@ typedef struct	s_piece
 }				t_piece;
 
 int		ft_find_player(char *str, t_size *size);
+int		ft_checkplace(t_piece *piece, t_size size, int m, int l);
+int     ft_rival(char c, char r);
+int     ft_ally(char c, char a);
 int		ft_istab(char c);
 
 #endif

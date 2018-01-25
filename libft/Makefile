@@ -12,6 +12,7 @@
 NAME =		libft.a
 
 SRC =		ft_putchar.c \
+			ft_putwchar.c \
 			ft_putstr.c \
 			ft_memset.c \
 			ft_bzero.c \
@@ -72,6 +73,7 @@ SRC =		ft_putchar.c \
 			get_next_line.c
 
 OBJ =		ft_putchar.o \
+			ft_putwchar.o \
 			ft_putstr.o \
 			ft_memset.o \
 			ft_bzero.o \
@@ -131,13 +133,13 @@ OBJ =		ft_putchar.o \
 			ft_lstmap.o \
 			get_next_line.o \
 
-FLAG =		-Wall -Werror -Wextra 
+FLAG =		-Wall -Werror -Wextra
 
 HEADER =	libft.h
 
 all :		$(NAME)
 
-$(NAME) : 
+$(NAME) :
 			@gcc -c $(FLAG) $(SRC)
 			@ar rc $(NAME) $(OBJ)
 
