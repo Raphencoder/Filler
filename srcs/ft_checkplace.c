@@ -15,11 +15,11 @@
 int **ft_fill_map(int **heatmap, t_size size, int add, int search)
 {
 	int i;
-	static int count;
 	int j;
 	int flag;
 
 	i = 0;
+	flag = 0;
 	j = 0;
 	while (i < size.taby)
 	{
@@ -34,37 +34,9 @@ int **ft_fill_map(int **heatmap, t_size size, int add, int search)
 					heatmap[i + 1][j] = add;
 				if (i > 0 && heatmap[i - 1][j] == 0)
 					heatmap[i - 1][j] = add;
-		//		if (i > 0 && (j < size.tabx) && heatmap[i - 1][j + 1] == 0)
-			//		heatmap[i - 1][j + 1] = add;
-		//		if (i > 0 && j > 0 && heatmap[i -1][j - 1] == 0)
-			//		heatmap[i - 1][j - 1] = add;
-		//		if (i + 1 < size.taby && (j < size.tabx) && heatmap[i + 1][j + 1] == 0)
-			//		heatmap[i + 1][j + 1] = add;
-			//	if (i + 1 < size.taby && j > 0 && heatmap[i + 1][j - 1] == 0)
-				//	heatmap[i + 1][j - 1] = add;
 				if (j < size.tabx && heatmap[i][j + 1] == 0)
 					heatmap[i][j + 1] = add;
 			}
-/*			if (heatmap[i][j] == -6)
-			{
-				flag++;
-				if (j > 0 && heatmap[i][j - 1] == 0)
-					heatmap[i][j - 1] = 1;
-				if (i + 1 < size.taby && heatmap[i + 1][j] == 0)
-					heatmap[i + 1][j] = 1;
-				if (i > 0 && heatmap[i - 1][j] == 0)
-					heatmap[i - 1][j] = 1;
-				if (i > 0 && (j < size.tabx) && heatmap[i - 1][j + 1] == 0)
-					heatmap[i - 1][j + 1] = 1;
-				if (i > 0 && j > 0 && heatmap[i -1][j - 1] == 0)
-					heatmap[i - 1][j - 1] = 1;
-				if (i + 1 < size.taby && (j < size.tabx) && heatmap[i + 1][j + 1] == 0)
-					heatmap[i + 1][j + 1] = 1;
-				if (i + 1 < size.taby && j > 0 && heatmap[i + 1][j - 1] == 0)
-					heatmap[i + 1][j - 1] = 1;
-				if (j < size.tabx && heatmap[i][j + 1] == 0)
-					heatmap[i][j + 1] = 1;
-			} */
 			j++;
 		}
 		j = 0;
@@ -75,7 +47,7 @@ int **ft_fill_map(int **heatmap, t_size size, int add, int search)
 	return (heatmap);
 }
 
-int **ft_heat_map(t_size size, t_piece piece)
+int **ft_heat_map(t_size size)
 {
 	int **heatmap;
 	int i;
@@ -111,20 +83,10 @@ void ft_take_score(t_piece *piece, t_size size)
 
 	i = 0;
 	j = 0;
-	size.heat = ft_heat_map(size, *piece);
+	size.heat = 0;
+//	ft_freesize((void**)size.heat, size.taby);
+	size.heat = ft_heat_map(size);
 	piece->score = 0;
-
-/*	while (i < size.taby)
-	{
-		while (j < size.tabx)
-		{
-			printf("%7d", size.heat[i][j]);
-			j++;
-		}
-		printf("\n");
-		j = 0;
-		i++;
-	}*/
 	while (i < size.ypiece)
 	{
 		while (j < size.xpiece)
@@ -136,8 +98,6 @@ void ft_take_score(t_piece *piece, t_size size)
 		j = 0;
 		i++;
 	}
-//	printf("piece score est %d\n", piece->score);
-//	if (piece->score == 0)
 	if (piece->score < piece->bestscore)
 	{
 		piece->bestscore = piece->score;
@@ -195,7 +155,6 @@ void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
 	if (touch == 1)
 	{
 		ft_take_score(piece, size);
-	//	printf("le meilleurs score est : %d %d\n", piece->besty, piece->bestx);
 		j = 50;
 		touch = 0;
 	}

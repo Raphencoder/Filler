@@ -48,6 +48,7 @@ typedef struct	s_piece
 }				t_piece;
 
 int		ft_find_player(char *str, t_size *size);
+void    ft_freesize(void **str, int i);
 void	ft_checkplace(t_piece *piece, t_size size, int m, int l);
 int     ft_rival(char c, char r);
 int     ft_ally(char c, char a);

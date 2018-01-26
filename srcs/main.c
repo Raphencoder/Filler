@@ -11,7 +11,7 @@
 
 #include "../filler.h"
 
-char	**ft_copy_tab(int i, int fd, char **buf, int y)
+char	**ft_copy_tab(int fd, char **buf, int y)
 {
 	char	**str;
 	int		j;
@@ -21,7 +21,7 @@ char	**ft_copy_tab(int i, int fd, char **buf, int y)
 	while (*buf[0] != 'P')
 	{
 		str[j] = ft_strdup(*buf + 4);
-	//	ft_strdel(buf);
+		ft_strdel(buf);
 		get_next_line(fd, buf);
 		j++;
 	}
@@ -73,7 +73,7 @@ char	**ft_copy_all(t_size *size, int fd)
 	}
 	while (buf[i] && !ft_istab(buf[i]))
 		i++;
-	size->tab = ft_copy_tab(i, fd, &buf, size->taby);
+	size->tab = ft_copy_tab(fd, &buf, size->taby);
 	size->xpiece = ft_take_x(buf);
 	size->ypiece = ft_take_y(buf);
 	piece.tab = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
@@ -107,19 +107,25 @@ t_size	ft_take_tab(int fd, t_piece *piece, char *buf, t_size size)
 char	*ft_place(char *str, t_size *size, int fd)
 {
 	char	*buf;
+	char	*tmp;
 	t_piece	piece;
-	int		counter;
-	int		i;
 
 	*size = ft_take_tab(fd, &piece, str, *size);
 	piece.bestx = -1;
 	piece.bestscore = 10000000;
 	ft_checkplace(&piece, *size, 0, 0);
+	free(size->tab);
+	while
+	free(piece.tab);
 	if (piece.bestx >= 0)
 	{
 		buf = ft_itoa(piece.besty);
-		buf = ft_strjoin(buf, " ");
-		buf = ft_strjoin(buf, ft_itoa(piece.bestx));
+		tmp = buf;
+		buf = ft_strjoin(tmp, " ");
+		ft_strdel(&tmp);
+		tmp = buf;
+		buf = ft_strjoin(tmp, ft_itoa(piece.bestx));
+		ft_strdel(&tmp);
 		return (buf);
 	}
 	return ("-1 0");
@@ -131,19 +137,18 @@ int		main(void)
 	char	*str;
 	char 	*res;
 	t_size	size;
-	t_piece	piece;
 
-//	fd = open("test6", O_RDONLY);
 	fd = 0;
 	get_next_line(fd, &str);
 	ft_find_player(str, &size);
-	while (1)
-	{
+//	while (1)
+//	{
 		res = ft_place(str, &size, fd);
 		ft_putendl(res);
-		if (ft_strequ("-1 0", res))
-			break ;
-	}
+//		if (ft_strequ("-1 0", res))
+//			break ;
+//	}
+	while (1);
 //	close(0);
 	return (0);
 }
