@@ -86,9 +86,10 @@ char	**ft_copy_all(t_size *size, int fd)
 	return (piece.tab);
 }
 
-t_size	ft_take_tab(int fd, t_piece *piece, char *buf, t_size size)
+t_size	ft_take_tab(int fd, t_piece *piece, t_size size)
 {
 	int		i;
+	char *buf;
 
 	i = 0;
 //	ft_find_player(buf, &size);
@@ -104,18 +105,17 @@ t_size	ft_take_tab(int fd, t_piece *piece, char *buf, t_size size)
 	return (size);
 }
 
-char	*ft_place(char *str, t_size *size, int fd)
+char	*ft_place(t_size *size, int fd)
 {
 	char	*buf;
 	char	*tmp;
 	t_piece	piece;
 
-	*size = ft_take_tab(fd, &piece, str, *size);
+	*size = ft_take_tab(fd, &piece, *size);
 	piece.bestx = -1;
 	piece.bestscore = 10000000;
 	ft_checkplace(&piece, *size, 0, 0);
 	free(size->tab);
-	while
 	free(piece.tab);
 	if (piece.bestx >= 0)
 	{
@@ -128,7 +128,7 @@ char	*ft_place(char *str, t_size *size, int fd)
 		ft_strdel(&tmp);
 		return (buf);
 	}
-	return ("-1 0");
+	return ("-1 -1");
 }
 
 int		main(void)
@@ -141,14 +141,15 @@ int		main(void)
 	fd = 0;
 	get_next_line(fd, &str);
 	ft_find_player(str, &size);
-//	while (1)
-//	{
-		res = ft_place(str, &size, fd);
+	ft_strdel(&str);
+	while (1)
+	{
+		res = ft_place(&size, fd);
 		ft_putendl(res);
-//		if (ft_strequ("-1 0", res))
-//			break ;
-//	}
-	while (1);
+		if (ft_strequ("-1 -1", res))
+			break ;
+	}
+//	while (1);
 //	close(0);
 	return (0);
 }

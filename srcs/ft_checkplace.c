@@ -28,13 +28,24 @@ int **ft_fill_map(int **heatmap, t_size size, int add, int search)
 			if (heatmap[i][j] == search)
 			{
 				flag++;
+				if (add == 1)
+				{
+					if (j > 0 && i > 0 && heatmap[i - 1][j -1] == 0)
+						heatmap[i - 1][j - 1] = add;
+					if (j > 0 && i + 1 < size.taby && heatmap[i + 1][j - 1] == 0)
+						heatmap[i + 1][j - 1] = add;
+					if (j + 1 < size.tabx && i > 0 && heatmap[i - 1][j + 1] == 0)
+						heatmap[i - 1][j + 1] = add;
+					if (j + 1 < size.tabx && i + 1 < size.taby && heatmap[i + 1][j + 1] == 0)
+						heatmap[i + 1][j + 1] = add;
+				}
 				if (j > 0 && heatmap[i][j - 1] == 0)
 					heatmap[i][j - 1] = add;
 				if (i + 1 < size.taby && heatmap[i + 1][j] == 0)
 					heatmap[i + 1][j] = add;
 				if (i > 0 && heatmap[i - 1][j] == 0)
 					heatmap[i - 1][j] = add;
-				if (j < size.tabx && heatmap[i][j + 1] == 0)
+				if (j + 1 < size.tabx && heatmap[i][j + 1] == 0)
 					heatmap[i][j + 1] = add;
 			}
 			j++;
