@@ -59,29 +59,31 @@ int		ft_take_y(char *str)
 
 char	**ft_copy_all(t_size *size, int fd)
 {
-	char *buf;
+	char	*buf;
 	t_piece	piece;
-	int	i;
+	int		i;
 
 	i = 0;
 	while (i < 2)
 	{
+		if (i)
+			ft_strdel(&buf);
 		get_next_line(fd, &buf);
 		i++;
-	//	else
-//			ft_strdel(&buf);
 	}
 	while (buf[i] && !ft_istab(buf[i]))
 		i++;
 	size->tab = ft_copy_tab(fd, &buf, size->taby);
 	size->xpiece = ft_take_x(buf);
 	size->ypiece = ft_take_y(buf);
+	ft_strdel(&buf);
 	piece.tab = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
 	i = 0;
 	while (i < size->ypiece)
 	{
 		get_next_line(fd, &buf);
-		piece.tab[i++] = buf;
+		piece.tab[i++] = ft_strdup(buf);
+		ft_strdel(&buf);
 	}
 	return (piece.tab);
 }
@@ -92,15 +94,14 @@ t_size	ft_take_tab(int fd, t_piece *piece, t_size size)
 	char *buf;
 
 	i = 0;
-//	ft_find_player(buf, &size);
-		get_next_line(fd, &buf);
-	//	ft_strdel(&buf);
+	get_next_line(fd, &buf);
 	while (buf[i] && !ft_isdigit(buf[i]))
 		i++;
 	size.taby = ft_atoi(buf + i);
 	while (buf[i] && ft_isdigit(buf[i]))
 		i++;
 	size.tabx = ft_atoi(buf + i + 1);
+	ft_strdel(&buf);
 	piece->tab = ft_copy_all(&size, fd);
 	return (size);
 }
@@ -109,14 +110,20 @@ char	*ft_place(t_size *size, int fd)
 {
 	char	*buf;
 	char	*tmp;
+	int		i;
 	t_piece	piece;
 
+	i = 0;
 	*size = ft_take_tab(fd, &piece, *size);
 	piece.bestx = -1;
 	piece.bestscore = 10000000;
 	ft_checkplace(&piece, *size, 0, 0);
 	free(size->tab);
-	free(piece.tab);
+//	while (i < size->taby)
+//	{
+		//ft_strdel(&size->tab[i]);
+	//	i++;
+//	}
 	if (piece.bestx >= 0)
 	{
 		buf = ft_itoa(piece.besty);
