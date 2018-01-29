@@ -91,11 +91,19 @@ void ft_take_score(t_piece *piece, t_size size)
 {
 	int i;
 	int j;
+//	int *tmp;
 
 	i = 0;
 	j = 0;
-	size.heat = 0;
-//	ft_freesize((void**)size.heat, size.taby);
+//	if (size.heat)
+//	{
+//		while (i < size.taby)
+//		{
+//			tmp = size.heat[i];
+//			free(tmp);
+//			i++;
+//		}
+//	}
 	size.heat = ft_heat_map(size);
 	piece->score = 0;
 	while (i < size.ypiece)
@@ -177,5 +185,7 @@ void	ft_checkplace(t_piece *piece, t_size size, int m, int l)
 			ft_checkplace(piece, size, clonem, clonel + 1);
 	}
 	if (m >= size.taby && touch != 1)
+	{
 		return ;
+	}
 }

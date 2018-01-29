@@ -110,6 +110,7 @@ char	*ft_place(t_size *size, int fd)
 {
 	char	*buf;
 	char	*tmp;
+	char	*tmp2;
 	int		i;
 	t_piece	piece;
 
@@ -118,12 +119,12 @@ char	*ft_place(t_size *size, int fd)
 	piece.bestx = -1;
 	piece.bestscore = 10000000;
 	ft_checkplace(&piece, *size, 0, 0);
-	free(size->tab);
-//	while (i < size->taby)
-//	{
-		//ft_strdel(&size->tab[i]);
-	//	i++;
-//	}
+	while (i < size->taby)
+	{
+		tmp = size->tab[i];
+		ft_strdel(&tmp);
+		i++;
+	}
 	if (piece.bestx >= 0)
 	{
 		buf = ft_itoa(piece.besty);
@@ -131,7 +132,9 @@ char	*ft_place(t_size *size, int fd)
 		buf = ft_strjoin(tmp, " ");
 		ft_strdel(&tmp);
 		tmp = buf;
-		buf = ft_strjoin(tmp, ft_itoa(piece.bestx));
+		tmp2 = ft_itoa(piece.bestx);
+		buf = ft_strjoin(tmp, tmp2);
+		ft_strdel(&tmp2);
 		ft_strdel(&tmp);
 		return (buf);
 	}
@@ -154,7 +157,11 @@ int		main(void)
 		res = ft_place(&size, fd);
 		ft_putendl(res);
 		if (ft_strequ("-1 -1", res))
-			break ;
+		{
+//			ft_strdel(&res);
+					break ;
+		}
+	//c	ft_strdel(&res);
 	}
 //	while (1);
 //	close(0);
