@@ -6,7 +6,7 @@
 /*   By: Raphael <raphaelkriefbm@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 12:49:10 by Raphael           #+#    #+#             */
-/*   Updated: 2018/01/22 13:08:00 by rkrief           ###   ########.fr       */
+/*   Updated: 2018/01/29 18:13:08 by rkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-typedef struct	s_fd_tracker {
-	int		fd;
-	char	*buf;
-}				t_fd_tracker;
+typedef struct		s_fd_tracker
+{
+	int				fd;
+	char			*buf;
+}					t_fd_tracker;
 
 void				ft_putchar(char c);
 int					ft_putwchar(wchar_t wc);

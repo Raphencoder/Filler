@@ -1,3 +1,4 @@
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
@@ -5,93 +6,16 @@
 /*   By: rkrief <rkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/22 12:15:36 by rkrief            #+#    #+#             */
-/*   Updated: 2018/01/22 20:20:32 by rkrief           ###   ########.fr       */
+/*   Updated: 2018/01/29 17:45:37 by rkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../filler.h"
 
-char	**ft_copy_tab(int fd, char **buf, int y)
-{
-	char	**str;
-	int		j;
-
-	j = 0;
-	str = (char**)ft_memalloc(sizeof(char*) * y + 1);
-	while (*buf[0] != 'P')
-	{
-		str[j] = ft_strdup(*buf + 4);
-		ft_strdel(buf);
-		get_next_line(fd, buf);
-		j++;
-	}
-	str[j] = NULL;
-	return (str);
-}
-
-int		ft_take_x(char *str)
-{
-	int	i;
-	int nb;
-
-	i = 0;
-	while (str[i] && !ft_isdigit(str[i]))
-	 	i++;
-	while (str[i] && ft_isdigit(str[i]))
-		i++;
-	while (str[i] && !ft_isdigit(str[i]))
-		i++;
-	nb = ft_atoi(str + i);
-	return (nb);
-}
-
-int		ft_take_y(char *str)
-{
-	int i;
-	int nb;
-
-	i = 0;
-	while (str[i] && !ft_isdigit(str[i]))
-		i++;
-	nb = ft_atoi(str + i);
-	return (nb);
-}
-
-char	**ft_copy_all(t_size *size, int fd)
-{
-	char	*buf;
-	t_piece	piece;
-	int		i;
-
-	i = 0;
-	while (i < 2)
-	{
-		if (i)
-			ft_strdel(&buf);
-		get_next_line(fd, &buf);
-		i++;
-	}
-	while (buf[i] && !ft_istab(buf[i]))
-		i++;
-	size->tab = ft_copy_tab(fd, &buf, size->taby);
-	size->xpiece = ft_take_x(buf);
-	size->ypiece = ft_take_y(buf);
-	ft_strdel(&buf);
-	piece.tab = (char**)ft_memalloc(sizeof(char*) * (size->ypiece + 1));
-	i = 0;
-	while (i < size->ypiece)
-	{
-		get_next_line(fd, &buf);
-		piece.tab[i++] = ft_strdup(buf);
-		ft_strdel(&buf);
-	}
-	return (piece.tab);
-}
-
 t_size	ft_take_tab(int fd, t_piece *piece, t_size size)
 {
 	int		i;
-	char *buf;
+	char	*buf;
 
 	i = 0;
 	get_next_line(fd, &buf);
@@ -106,25 +30,37 @@ t_size	ft_take_tab(int fd, t_piece *piece, t_size size)
 	return (size);
 }
 
-char	*ft_place(t_size *size, int fd)
+void	ft_free_all(t_size *size, t_piece *piece)
 {
-	char	*buf;
-	char	*tmp;
-	char	*tmp2;
 	int		i;
-	t_piece	piece;
+	char	*tmp;
 
 	i = 0;
-	*size = ft_take_tab(fd, &piece, *size);
-	piece.bestx = -1;
-	piece.bestscore = 10000000;
-	ft_checkplace(&piece, *size, 0, 0);
 	while (i < size->taby)
 	{
 		tmp = size->tab[i];
 		ft_strdel(&tmp);
 		i++;
 	}
+	ft_memdel((void**)&size->tab);
+	i = 0;
+	while (piece->tab[i])
+		free(piece->tab[i++]);
+	free(piece->tab);
+}
+
+char	*ft_place(t_size *size, int fd)
+{
+	char	*buf;
+	char	*tmp;
+	char	*tmp2;
+	t_piece	piece;
+
+	*size = ft_take_tab(fd, &piece, *size);
+	piece.bestx = -1;
+	piece.bestscore = 10000000;
+	ft_checkplace(&piece, *size, 0, 0);
+	ft_free_all(size, &piece);
 	if (piece.bestx >= 0)
 	{
 		buf = ft_itoa(piece.besty);
@@ -145,7 +81,7 @@ int		main(void)
 {
 	int		fd;
 	char	*str;
-	char 	*res;
+	char	*res;
 	t_size	size;
 
 	fd = 0;
@@ -157,13 +93,8 @@ int		main(void)
 		res = ft_place(&size, fd);
 		ft_putendl(res);
 		if (ft_strequ("-1 -1", res))
-		{
-//			ft_strdel(&res);
-					break ;
-		}
-	//c	ft_strdel(&res);
+			break ;
+		ft_strdel(&res);
 	}
-//	while (1);
-//	close(0);
 	return (0);
 }
