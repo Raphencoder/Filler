@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Raphael <raphaelkriefbm@gmail.com>         +#+  +:+       +#+        */
+/*   By: Raphael          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 12:49:10 by Raphael           #+#    #+#             */
 /*   Updated: 2018/01/29 18:13:08 by rkrief           ###   ########.fr       */
